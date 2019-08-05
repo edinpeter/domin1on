@@ -1,0 +1,1 @@
+Side project to implement a game, then maybe make a UI and a bot to play the game
