@@ -1,5 +1,6 @@
 import json
-from supply import Supply
+from .supply import Supply
+
 class Game:
     def __init__(self, player_count):
         supply_piles = self.get_supply_piles
