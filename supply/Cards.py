@@ -147,14 +147,14 @@ ACTION_CARDS_LIST = [
 ]
 
 TREASURE_CARDS_LIST = [
-    {"name": "Copper", "price": 0, "value": 1},
-    {"name": "Silver", "price": 3, "value": 2},
-    {"name": "Gold", "price": 6, "value": 3},
+    {"id": 100, "name": "Copper", "price": 0, "value": 1},
+    {"id": 101, "name": "Silver", "price": 3, "value": 2},
+    {"id": 102, "name": "Gold", "price": 6, "value": 3},
 ]
 
 
 VICTORY_CARDS_LIST = [
-    {"name": "Estate", "price": 2, "points": 1},
-    {"name": "Duchy", "price": 5, "points": 3},
-    {"name": "Province", "price": 8, "points": 6},
+    {"id": 200, "name": "Estate", "price": 2, "points": 1},
+    {"id": 201, "name": "Duchy", "price": 5, "points": 3},
+    {"id": 202, "name": "Province", "price": 8, "points": 6},
 ]

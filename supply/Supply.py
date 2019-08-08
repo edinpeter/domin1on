@@ -13,14 +13,18 @@ class Supply:
         self.init_action_cards()
 
     def init_victory_cards(self):
-        self.victory_cards["Estate"] = 20
-        self.victory_cards["Duchy"] = 20
-        self.victory_cards["Province"] = 20
+        for victory_card in VICTORY_CARDS_LIST:
+            self.victory_cards[victory_card["id"]] = {
+                "quantity": 20,
+                "card": victory_card,
+            }
 
     def init_treasure_cards(self):
-        self.trasure_cards["Copper"] = 20
-        self.treasure_cards["Silver"] = 20
-        self.treasure_cards["Gold"] = 20
+        for treasure_card in TREASURE_CARDS_LIST:
+            self.treasure_cards[treasure_card["id"]] = {
+                "quantity": 20,
+                "card": treasure_card,
+            }
 
     def init_action_cards(self):
         action_cards_idxs = set()
