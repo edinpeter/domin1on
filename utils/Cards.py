@@ -4,7 +4,6 @@ from enum import Enum, auto
 class Actions(Enum):
     PLUS_ACTION = auto()
     PLUS_CARD = auto()
-    PLUS_BUY = auto()
     DISCARD_ANY_AMOUNT_AND_REDRAW = auto()
     OPTIONAL_TRASH = auto()
     OPTIONAL_PLUS_CARD_FROM_DISCARD = auto()
@@ -20,6 +19,10 @@ class Actions(Enum):
     TRASH_TREASURE_FOR_VALUE_PLUS_THREE = auto()
     OTHERS_GAIN_CURSE = auto()
     TRASH_THIS = auto()
+
+
+class BuyActions(Enum):
+    PLUS_BUY = auto()
 
 
 ACTION_CARDS_LIST = [
@@ -90,7 +93,7 @@ ACTION_CARDS_LIST = [
         "name": "CouncilRoom",
         "price": 5,
         "actions": (
-            [Actions.PLUS_CARD] * 4 + [Actions.PLUS_BUY] + [Actions.OTHERS_DRAW_ONE]
+            [Actions.PLUS_CARD] * 4 + [BuyActions.PLUS_BUY] + [Actions.OTHERS_DRAW_ONE]
         ),
     },
     {
@@ -98,7 +101,9 @@ ACTION_CARDS_LIST = [
         "name": "Festival",
         "price": 5,
         "actions": (
-            [Actions.PLUS_ACTION] * 2 + [Actions.PLUS_BUY] + [Actions.PLUS_2_TREASURE]
+            [Actions.PLUS_ACTION] * 2
+            + [BuyActions.PLUS_BUY]
+            + [Actions.PLUS_2_TREASURE]
         ),
     },
     {
@@ -115,7 +120,7 @@ ACTION_CARDS_LIST = [
             [
                 Actions.PLUS_CARD,
                 Actions.PLUS_ACTION,
-                Actions.PLUS_BUY,
+                BuyActions.PLUS_BUY,
                 Actions.PLUS_1_TREASURE,
             ]
         ),
@@ -136,7 +141,7 @@ ACTION_CARDS_LIST = [
         "id": 19,
         "name": "Woodcutter",
         "price": 3,
-        "actions": [Actions.PLUS_BUY, Actions.PLUS_2_TREASURE],
+        "actions": [BuyActions.PLUS_BUY, Actions.PLUS_2_TREASURE],
     },
     {
         "id": 20,
@@ -157,4 +162,5 @@ VICTORY_CARDS_LIST = [
     {"id": 200, "name": "Estate", "price": 2, "points": 1},
     {"id": 201, "name": "Duchy", "price": 5, "points": 3},
     {"id": 202, "name": "Province", "price": 8, "points": 6},
+    {"id": 203, "name": "Curse", "price": 999, "points": -1},
 ]
