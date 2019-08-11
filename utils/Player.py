@@ -1,13 +1,13 @@
 import queue
 import random
 import logging
-
+from keras.models import Sequential
+from keras.layers import Dense
+import numpy as np
 
 class Player:
     def __init__(self, name, supply, random_inputs=False):
         self.logger = logging.getLogger("domin1on")
-        fh = logging.FileHandler('spam.log')
-        fh.setLevel(logging.DEBUG)
         self.supply_ref = supply
         self.name = name
         self.deck = queue.SimpleQueue()
@@ -173,6 +173,7 @@ class Player:
     def can_trash(self, card_id):
         return card_id in self.hand
 
+class HumanPlayer(Player):
     def prompt_gain_card(self, choices):
         if self.random_inputs:
             return random.choice(choices)
@@ -239,6 +240,88 @@ class Player:
                 "Invalid Amount: Choose a an amount to discard: %s" % str(self.hand)
             )
         return int(choice)
+
+    @staticmethod
+    def is_int(input):
+        try:
+            num = int(input)
+        except ValueError:
+            return False
+        return True
+
+class MachinePlayer(Player):
+    def __init__(self, name, supply, random_inputs=False, existing_model_set=None):
+
+        super().__init__(name, supply, random_inputs=random_inputs)
+        if not existing_model_set:
+            self.build_networks()
+        else:
+            self.load_networks(existing_model_set)
+
+    def prompt_gain_card(self, choices):
+        return random.choice(choices)
+
+    def prompt_draw_from_discard(self):
+        choices = self.discard_pile + [-1]
+        return random.choice(choices)
+
+    def prompt_trash_card(self, choices=None, optional=True):
+        if not choices:
+            choices = self.hand + ([-1] if optional else [])
+        return random.choice(choices)
+
+    def prompt_action_card(self, choices):
+        return random.choice(choices)
+
+    def prompt_buy_card(self, choices):
+        return random.choice(choices)
+
+    def prompt_discard_card(self):
+        choices = self.hand
+        return random.choice(choices)
+
+    def prompt_discard_number(self):
+        choices = list(range(0, len(self.hand)))
+        return random.choice(choices)
+
+    def build_networks(self):
+        self.networks = {}
+        for task in ["gain", "draw_discard", "trash", "action", "buy", "discard", "discard_number"]:
+            self.networks[task] = self.build_network()
+
+
+    def build_network(self):
+        model = Sequential()
+        model.add(Dense(12, input_dim=8, activation='relu'))
+        model.add(Dense(8, activation='relu'))
+        model.add(Dense(8, activation='relu'))
+        model.add(Dense(8, activation='relu'))
+        model.add(Dense(1, activation='sigmoid'))
+
+        model.compile(loss='binary_crossentropy', optimizer='adam')
+
+        return model
+
+    def mutate_networks(self):
+        for task in self.networks:
+            network = self.networks[task]
+            network = self.mutate_network(network)
+            self.networks[task] = network
+
+        return
+
+    def mutate_network(self, network):
+        for layer in network.layers:
+            layer_inf = layer.get_weights()
+            layer_weights = layer_inf[0]
+            r = np.random.random(layer_weights.shape)
+            r = np.subtract(r, np.ones(r.shape) * .5)
+            r = r * .1
+            new_weights = np.add(layer_weights, r)
+            layer_inf[0] = new_weights
+            layer.set_weights(layer_inf)
+        return network
+
 
     @staticmethod
     def is_int(input):

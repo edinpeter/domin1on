@@ -94,6 +94,7 @@ class ActionHandler:
                 self.global_action_handler.process_global_action(global_action)
         self.player.end_action_phase()
         while self.buy_stack:
+            self.log("Current buy stack: %s" % str(self.buy_stack))
             action = self.buy_stack.pop()
             global_action = self.process_buy(action)
             if global_action:

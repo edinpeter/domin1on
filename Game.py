@@ -1,11 +1,11 @@
 from utils.Supply import Supply
-from utils.Player import Player
+from utils.Player import Player, HumanPlayer, MachinePlayer
 from utils.ActionHandler import ActionHandler
 from utils.GlobalActionHandler import GlobalActionHandler
 import logging
 from multiprocessing import Pool
 
-logging.basicConfig(level = logging.WARNING)
+logging.basicConfig(level = logging.DEBUG)
 class Game:
     def __init__(self):
         self.supply = Supply()
@@ -19,7 +19,7 @@ class Game:
         self.logger.debug("Game Controller: %s" % msg)
 
     def add_player(self, name, random_inputs=False):
-        new_player = Player(name, self.supply, random_inputs)
+        new_player = MachinePlayer(name, self.supply, random_inputs)
         self.players.append(new_player)
 
     def process_turn(self, player):
@@ -62,8 +62,12 @@ def play_games(i):
     return i
 
 if __name__ == "__main__":
+   # with Pool(16) as p:
+    #    p.map(play_games, range(16))
+
     g = Game()
     g.add_player("pete", random_inputs=True)
     g.add_player("pete2", random_inputs=True)
     g.game_loop()
+
 
