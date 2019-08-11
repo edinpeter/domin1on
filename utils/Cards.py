@@ -143,12 +143,12 @@ ACTION_CARDS_LIST = [
         "price": 3,
         "actions": [BuyActions.PLUS_BUY, Actions.PLUS_2_TREASURE],
     },
-    {
-        "id": 20,
-        "name": "Feast",
-        "price": 3,
-        "actions": [Actions.TRASH_THIS, Actions.GAIN_CARD_UP_TO_FIVE],
-    },
+    #    {
+    #        "id": 20,
+    #        "name": "Feast",
+    #        "price": 3,
+    #        "actions": [Actions.TRASH_THIS, Actions.GAIN_CARD_UP_TO_FIVE],
+    #    },
 ]
 
 TREASURE_CARDS_LIST = [

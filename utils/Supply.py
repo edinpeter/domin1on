@@ -1,16 +1,19 @@
 from .Cards import ACTION_CARDS_LIST, TREASURE_CARDS_LIST, VICTORY_CARDS_LIST
 import random
-from collections import namedtuple
+import logging
 
 
 class Supply:
     def __init__(self):
         self.cards = {}
+        self.logger = logging.getLogger("domin1on")
 
         self.init_victory_cards()
         self.init_treasure_cards()
         self.init_action_cards()
 
+    def log(self, msg):
+        self.logger.debug("Supply: %s" % msg)
 
     def init_victory_cards(self):
         for victory_card in VICTORY_CARDS_LIST:
@@ -44,6 +47,9 @@ class Supply:
     def get_cards_costing(
         self, threshold, mode="exact", card_type="any", availability="available"
     ):
+        self.log(
+            "Query for cards of type: %s costing %s: %i " % (card_type, mode, threshold)
+        )
         card_type_filters = {
             "action": lambda x: x < 100,
             "treasure": lambda x: 100 <= x < 200,
@@ -51,9 +57,9 @@ class Supply:
             "any": lambda x: True,
         }
         card_price_filters = {
-            "exact": lambda x, y=threshold: x == y,
-            "min": lambda x, y=threshold: x >= y,
-            "max": lambda x, y=threshold: x <= y,
+            "exact": lambda x, y=threshold: self.cards[x]["card"]["price"] == y,
+            "min": lambda x, y=threshold: self.cards[x]["card"]["price"] >= y,
+            "max": lambda x, y=threshold: self.cards[x]["card"]["price"] <= y,
         }
         card_quantity_filters = {"available": lambda x: self.cards[x]["quantity"] > 0}
         assert mode in card_price_filters, "%s price filter not found" % mode
@@ -67,4 +73,4 @@ class Supply:
         return list(matching_cards)
 
     def decrement_card(self, card_id, amt=1):
-        self.cards[card_id]["quantitiy"] -= amt
+        self.cards[card_id]["quantity"] -= amt
