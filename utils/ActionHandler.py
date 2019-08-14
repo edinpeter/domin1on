@@ -20,10 +20,12 @@ class ActionHandler:
         if action == Actions.PLUS_ACTION:
             played_card = self.player.do_action()
             if played_card:
-                for action in reversed(self.supply.get_card_info(played_card)["actions"]):
+                for action in reversed(
+                    self.supply.get_card_info(played_card)["actions"]
+                ):
                     if action in Actions:
                         if action == Actions.TRASH_THIS:
-                            self.player.trash_from_discard(played_card)
+                            self.player.trash_from_in_play(played_card)
                         else:
                             self.action_stack.append(action)
                     elif action in BuyActions:
@@ -60,10 +62,12 @@ class ActionHandler:
         elif action == Actions.DOUBLE_PLAY_FROM_HAND:
             played_card = self.player.do_action()
             if played_card:
-                for action in reversed(self.supply.get_card_info(played_card)["actions"] * 2):
+                for action in reversed(
+                    self.supply.get_card_info(played_card)["actions"] * 2
+                ):
                     if action in Actions:
                         if action == Actions.TRASH_THIS:
-                            self.player.trash_from_discard(played_card)
+                            self.player.trash_from_in_play(played_card)
                         else:
                             self.action_stack.append(action)
                     elif action in BuyActions:
@@ -88,6 +92,8 @@ class ActionHandler:
     def process_actions(self):
         while self.action_stack:
             self.log("Current action stack: %s" % str(self.action_stack))
+            if len(self.action_stack) > 50:
+                raise ValueError
             action = self.action_stack.pop()
             global_action = self.process_action(action)
             if global_action:

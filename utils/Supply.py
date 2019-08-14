@@ -15,6 +15,37 @@ class Supply:
     def log(self, msg):
         self.logger.debug("Supply: %s" % msg)
 
+    def get_card_counts(self):
+        counts = {}
+        card_sets = [ACTION_CARDS_LIST, TREASURE_CARDS_LIST, VICTORY_CARDS_LIST]
+        for card_set in card_sets:
+            for card in card_set:
+                card_id = int(card["id"])
+                if card_id in self.cards:
+                    counts[card_id] = self.cards[card_id]["quantity"]
+                else:
+                    counts[card_id] = -1
+
+        return counts
+
+    def action_card_counts(self):
+        active_cards = []
+        for i in range(len(ACTION_CARDS_LIST)):
+            active_cards.append(1 if i in self.cards else 0)
+        return active_cards
+
+    def get_active_treasure_cards(self):
+        active_cards = []
+        for i in range(len(TREASURE_CARDS_LIST)):
+            active_cards.append(1 if i in self.cards else 0)
+        return active_cards
+
+    def get_active_victory_cards(self):
+        active_cards = []
+        for i in range(len(VICTORY_CARDS_LIST)):
+            active_cards.append(1 if i in self.cards else 0)
+        return active_cards
+
     def init_victory_cards(self):
         for victory_card in VICTORY_CARDS_LIST:
             self.cards[victory_card["id"]] = {"quantity": 20, "card": victory_card}
