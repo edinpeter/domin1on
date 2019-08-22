@@ -1,6 +1,7 @@
-from .Cards import ACTION_CARDS_LIST, TREASURE_CARDS_LIST, VICTORY_CARDS_LIST
-import random
 import logging
+import random
+
+from .Cards import ACTION_CARDS_LIST, TREASURE_CARDS_LIST, VICTORY_CARDS_LIST
 
 
 class Supply:
@@ -28,24 +29,6 @@ class Supply:
 
         return counts
 
-    def action_card_counts(self):
-        active_cards = []
-        for i in range(len(ACTION_CARDS_LIST)):
-            active_cards.append(1 if i in self.cards else 0)
-        return active_cards
-
-    def get_active_treasure_cards(self):
-        active_cards = []
-        for i in range(len(TREASURE_CARDS_LIST)):
-            active_cards.append(1 if i in self.cards else 0)
-        return active_cards
-
-    def get_active_victory_cards(self):
-        active_cards = []
-        for i in range(len(VICTORY_CARDS_LIST)):
-            active_cards.append(1 if i in self.cards else 0)
-        return active_cards
-
     def init_victory_cards(self):
         for victory_card in VICTORY_CARDS_LIST:
             self.cards[victory_card["id"]] = {"quantity": 20, "card": victory_card}
@@ -72,7 +55,7 @@ class Supply:
 
     def get_active_cards(self):
         cards = self.cards.keys()
-        cards = [card for card in cards if self.get_card_quantity(card) > 0]
+        cards = [card for card in cards if self.get_card_quantity(card) >= 0]
         return cards
 
     def get_cards_costing(

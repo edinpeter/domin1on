@@ -1,5 +1,6 @@
-from .Cards import Actions, BuyActions
 import logging
+
+from .Cards import Actions, BuyActions
 
 
 class ActionHandler:
@@ -15,6 +16,9 @@ class ActionHandler:
 
     def log(self, msg):
         self.logger.debug("Player %s ActionHandler: %s" % (self.player.name, msg))
+
+    def log_err(self, msg):
+        self.logger.error("Player %s ActionHandler: %s" % (self.player.name, msg))
 
     def process_action(self, action):
         if action == Actions.PLUS_ACTION:
@@ -92,8 +96,15 @@ class ActionHandler:
     def process_actions(self):
         while self.action_stack:
             self.log("Current action stack: %s" % str(self.action_stack))
+            """
             if len(self.action_stack) > 50:
+                self.log_err(self.action_stack)
+                self.log_err(self.player.get_card_counts())
+                self.log_err(self.buy_stack)
+                self.log_err(self.player.in_play)
+                self.log_err(self.player.discard_pile)
                 raise ValueError
+            """
             action = self.action_stack.pop()
             global_action = self.process_action(action)
             if global_action:

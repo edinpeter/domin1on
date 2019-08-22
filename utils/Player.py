@@ -1,9 +1,11 @@
+import logging
 import queue
 import random
-import logging
-from keras.models import Sequential
-from keras.layers import Dense
+
+import keras
 import numpy as np
+from keras.layers import Dense
+from keras.models import Sequential
 
 
 class Player:
@@ -91,9 +93,11 @@ class Player:
     def trash_from_discard(self, card):
         self.discard_pile.remove(card)
         self.card_counts[card] -= 1
+
     def trash_from_in_play(self, card):
         self.in_play.remove(card)
         self.card_counts[card] -= 1
+
     def gain_from_supply(self, card):
         self.discard_pile.append(card)
         self.supply_ref.decrement_card(card)
@@ -287,9 +291,25 @@ class HumanPlayer(Player):
 
 
 class MachinePlayer(Player):
-    def __init__(self, name, supply, netset):
+    def __init__(self, name, supply, networks_config):
         super().__init__(name, supply)
-        self.netset = netset
+        self.networks = self.get_netset(networks_config)
+
+    def get_netset(self, networks_config):
+        # Iterate over dictionary with kv = {"net_name" : (model_config, model_weights)}
+        # Return netset for each network {"net_name" : predict-able_network }
+        networks = {}
+        for network_name in networks_config:
+            network_config = networks_config[network_name]
+            networks[network_name] = self.import_model(network_config)
+        return networks
+
+    def import_model(self, model_info):
+        config, weights = model_info[0], model_info[1]
+        model = Sequential.from_config(config)
+        model.set_weights(weights)
+        model._make_predict_function()
+        return model
 
     def get_supply_input_vector(self):
         counts = self.supply_ref.get_card_counts()
@@ -318,7 +338,7 @@ class MachinePlayer(Player):
             supply_input_vector, deck_input_vector, choices
         )
         input_vectors = np.array(input_vectors)
-        predictions = self.netset.networks[network_name].predict(input_vectors)
+        predictions = self.networks[network_name].predict(input_vectors)
         return choices[np.argmax(predictions)]
 
     def prompt_gain_card(self, choices):
